@@ -1,3 +1,4 @@
+import { serve } from "https://deno.land/std/http/server.ts";
 import { ActivityTypes, Bot, createBot, DiscordenoInteraction, DiscordenoUser, startBot } from 'https://deno.land/x/discordeno@13.0.0-rc18/mod.ts';
 import { BotWithCache, enableCachePlugin, enableCacheSweepers } from 'https://deno.land/x/discordeno_cache_plugin@0.0.21/mod.ts';
 import 'https://deno.land/x/dotenv@v3.2.0/load.ts';
@@ -7,6 +8,24 @@ async function getDustPrice(): Promise<string> {
     const dustPrice = await response.json();
 
     return dustPrice['dust-protocol']['usd'].toString();
+}
+
+async function setDustPriceDiscordStatus(bot: Bot): Promise<void> {
+    try {
+        const dustPrice = await getDustPrice();
+        bot.helpers.editBotStatus({
+            status: 'online',
+            activities: [
+                {
+                    type: ActivityTypes.Watching,
+                    name: `DUST: \$${dustPrice}`,
+                    createdAt: new Date().getTime(),
+                },
+            ]
+        });
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 const baseBot = createBot({
@@ -22,13 +41,34 @@ const baseBot = createBot({
                 return;
             }
 
-            if (interaction.data?.name === 'ping') { // ping
-                await bot.helpers.sendMessage(
-                    interaction.channelId,
-                    {
-                        content: 'pong!',
+            switch (interaction.data?.name) {
+                case 'ping':
+                    await bot.helpers.sendMessage(
+                        interaction.channelId,
+                        {
+                            content: 'pong!',
+                        }
+                    );
+                    break;
+                case 'dustprice':
+                    try {
+                        const dustPrice = await getDustPrice();
+                        await bot.helpers.sendMessage(
+                            interaction.channelId,
+                            {
+                                content: `DUST: \$${dustPrice}`,
+                            }
+                        )
+                    } catch (error) {
+                        console.error(error);
                     }
-                );
+                    break;
+                default:
+                    break;
+            }
+
+            if (interaction.data?.name === 'ping') { // ping
+                
             }
 
             if (interaction.data?.name === 'dustprice') { // dustprice
@@ -48,16 +88,8 @@ const bot: BotWithCache = enableCachePlugin(baseBot);
 enableCacheSweepers(bot);
 
 setInterval(async () => {
-    bot.helpers.editBotStatus({
-        status: 'online',
-        activities: [
-            {
-                type: ActivityTypes.Watching,
-                name: `DUST: \$${await getDustPrice()}`,
-                createdAt: new Date().getTime(),
-            },
-        ]
-    });
+    await setDustPriceDiscordStatus(bot);
 }, 10000);
 
+serve((_req) => new Response('still alive!'));
 await startBot(bot);
