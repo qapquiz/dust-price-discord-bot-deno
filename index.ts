@@ -37,6 +37,7 @@ const baseBot = createBot({
             console.log(`Successfully logged in as ${payload.user.username}`);
         },
         interactionCreate: async (bot: Bot, interaction: DiscordenoInteraction) => {
+            console.log('interaction create!');
             if (interaction.channelId === undefined) {
                 return;
             }
