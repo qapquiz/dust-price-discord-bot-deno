@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std/http/server.ts";
-import { ActivityTypes, Bot, createBot, DiscordenoInteraction, DiscordenoUser, startBot } from 'https://deno.land/x/discordeno@13.0.0-rc18/mod.ts';
+import { ActivityTypes, Bot, createBot, DiscordenoInteraction, DiscordenoUser, InteractionResponseTypes, startBot } from 'https://deno.land/x/discordeno@13.0.0-rc18/mod.ts';
 import { BotWithCache, enableCachePlugin, enableCacheSweepers } from 'https://deno.land/x/discordeno_cache_plugin@0.0.21/mod.ts';
 import 'https://deno.land/x/dotenv@v3.2.0/load.ts';
 
@@ -43,22 +43,30 @@ const baseBot = createBot({
 
             switch (interaction.data?.name) {
                 case 'ping':
-                    await bot.helpers.sendMessage(
-                        interaction.channelId,
+                    await bot.helpers.sendInteractionResponse(
+                        interaction.id,
+                        interaction.token,
                         {
-                            content: 'pong!',
+                            type: InteractionResponseTypes.ChannelMessageWithSource,
+                            data: {
+                                content: 'pong!',
+                            }
                         }
                     );
                     break;
                 case 'dustprice':
                     try {
                         const dustPrice = await getDustPrice();
-                        await bot.helpers.sendMessage(
-                            interaction.channelId,
+                        await bot.helpers.sendInteractionResponse(
+                            interaction.id,
+                            interaction.token,
                             {
-                                content: `DUST: \$${dustPrice}`,
+                                type: InteractionResponseTypes.ChannelMessageWithSource,
+                                data: {
+                                    content: `DUST: \$${dustPrice}`,
+                                }
                             }
-                        )
+                        );
                     } catch (error) {
                         console.error(error);
                     }
