@@ -38,6 +38,7 @@ const baseBot = createBot({
         },
         interactionCreate: async (bot: Bot, interaction: DiscordenoInteraction) => {
             console.log('interaction create!');
+            console.log(interaction);
             if (interaction.channelId === undefined) {
                 return;
             }
