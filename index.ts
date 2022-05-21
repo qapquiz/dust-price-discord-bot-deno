@@ -45,31 +45,31 @@ const baseBot = createBot({
 
             switch (interaction.data?.name) {
                 case 'ping':
-                    await bot.helpers.sendInteractionResponse(
-                        interaction.id,
-                        interaction.token,
-                        {
-                            type: InteractionResponseTypes.ChannelMessageWithSource,
-                            data: {
-                                content: 'pong!',
-                            }
-                        }
-                    );
+                    // await bot.helpers.sendInteractionResponse(
+                    //     interaction.id,
+                    //     interaction.token,
+                    //     {
+                    //         type: InteractionResponseTypes.ChannelMessageWithSource,
+                    //         data: {
+                    //             content: 'pong!',
+                    //         }
+                    //     }
+                    // );
                     break;
                 case 'dustprice':
                     console.log('enter dustprice case');
                     try {
                         const dustPrice = await getDustPrice();
-                        await bot.helpers.sendInteractionResponse(
-                            interaction.id,
-                            interaction.token,
-                            {
-                                type: InteractionResponseTypes.ChannelMessageWithSource,
-                                data: {
-                                    content: `DUST: \$${dustPrice}`,
-                                }
-                            }
-                        );
+                        // await bot.helpers.sendInteractionResponse(
+                        //     interaction.id,
+                        //     interaction.token,
+                        //     {
+                        //         type: InteractionResponseTypes.ChannelMessageWithSource,
+                        //         data: {
+                        //             content: `DUST: \$${dustPrice}`,
+                        //         }
+                        //     }
+                        // );
                     } catch (error) {
                         console.error(error);
                     }
