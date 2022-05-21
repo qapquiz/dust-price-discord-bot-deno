@@ -66,20 +66,6 @@ const baseBot = createBot({
                 default:
                     break;
             }
-
-            if (interaction.data?.name === 'ping') { // ping
-                
-            }
-
-            if (interaction.data?.name === 'dustprice') { // dustprice
-                await bot.helpers.sendMessage(
-                    interaction.channelId,
-                    {
-                        content: `DUST: \$${await getDustPrice()}`,
-                    }
-                )
-                return;
-            }
         },
     },
 });
