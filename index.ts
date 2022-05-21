@@ -56,6 +56,7 @@ const baseBot = createBot({
                     );
                     break;
                 case 'dustprice':
+                    console.log('enter dustprice case');
                     try {
                         const dustPrice = await getDustPrice();
                         await bot.helpers.sendInteractionResponse(
